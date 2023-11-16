@@ -13,20 +13,22 @@
 - Click on **Add**
 
 - **Project details**
-  - Subscription: Free Trial
-  - Resource Group: aks-rg1
+  - Click on **Flexible Server**
+  - Resource Group: aks-demo-gp
 - **Server Details**
+
   - Server name: akssqldb
-  - Data source: none
-  - Location: (US) East US
-  - Version: 5.7 (default)
+  - Region: East US
+  - Version: 8.0
+  - Workload Type: For development and hobby projects
+
   - **Compute + Storage**
-    - Pricing Tier: Basic
+    - Compute Size: Burstable, B1s
     - VCore: 1
-    - Storage: 5GB
+    - Storage: 20GB
     - Storage Auto Growth: Yes
     - Backup Retention: 7 days
-    - Locally Redundant: Yes
+
 - **Administrative Account**
   - Admin username: dbadmin
   - Password: Dbpassword11
@@ -64,7 +66,7 @@ metadata:
   name: mysql
 spec:
   type: ExternalName
-  externalName: aks-demo.mysql.database.azure.com
+  externalName: akssqldb.mysql.database.azure.com
 ```
 
 - **Deploy Manifest**
@@ -80,10 +82,10 @@ kubectl apply -f kube-manifests/01-MySQL-externalName-Service.yml
 kubectl run -it --rm --image=mysql:5.7.22 --restart=Never mysql-client -- mysql -h <AZURE-MYSQ-DB-HOSTNAME> -u <USER_NAME> -p<PASSWORD>
 
 # Replace Host Name of Azure MySQL Database and Username and Password
-kubectl run -it --rm --image=mysql:5.7.22 --restart=Never mysql-client -- mysql -h akswebappdb.mysql.database.azure.com -u dbadmin@akswebappdb -pRedhat1449
+kubectl run -it --rm --image=mysql:5.7.22 --restart=Never mysql-client -- mysql -h akssqldb.mysql.database.azure.com -u dbadmin@akssqldb -pDbpassword11
 
 mysql> show schemas;
-mysql> create database webappdb;
+mysql> create database akssqldb;
 mysql> show schemas;
 mysql> exit
 ```
@@ -101,9 +103,9 @@ mysql> exit
 
 # Change To dbadmin@<YOUR-Azure-MYSQL-DB-NAME>
             - name: DB_USERNAME
-              value: "dbadmin@akswebappdb"
+              value: "dbadmin@akssqldb"
             - name: DB_PASSWORD
-              value: "Redhat1449"
+              value: "Dbpassword11"
 
 ```
 
